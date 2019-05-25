@@ -1,3 +1,4 @@
+
 body {
   margin: 0;
   padding: 0;
@@ -8,9 +9,29 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #282c34;
   color: #fff;
+
+  background: #4b6cb7;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #182848, #4b6cb7) fixed;  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(315deg, #182848, #4b6cb7) fixed; /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+button {
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  color: #fff;
+  transition: background-color 150ms;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  background: rgba(255,255,255,0.1);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }

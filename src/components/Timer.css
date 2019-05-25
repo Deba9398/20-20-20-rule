@@ -1,0 +1,25 @@
+.timer {
+    margin-top: 32px;
+    padding: 32px 8px;
+}
+
+.donut-chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 240px;
+    position: relative;
+}
+
+.donut-chart svg {
+    position: absolute;
+}
+
+.count-down {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-size: 24px;
+}
+
+button {
+    margin-top: 16px;
+}

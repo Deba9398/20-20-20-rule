@@ -19,7 +19,7 @@ class Timer extends React.Component {
             worker: newWorker,
             formatter: new Intl.RelativeTimeFormat("en", {localeMatcher: 'best fit', number: 'always', 'style': 'short' }),
             mode: 'stopped',
-            remainingTicks: 0
+            remainingTicks: 20 * 60
         }
     }
 
@@ -32,13 +32,26 @@ class Timer extends React.Component {
     }
 
     render() {
+        const total = this.state.remainingTicks / (60 * 20) * 100;
+        const seconds = this.state.remainingTicks % 60;
+        const minutes = (this.state.remainingTicks - seconds) / 60;
+
         return (
             <div className="timer">
-                <h1>Timer</h1>
-                <p>Mode: {this.state.mode}</p>
-                <p>{this.state.formatter.format(parseInt(this.state.remainingTicks, 10), 'second')}</p>
-                <button onClick={() => this.startTimer()}>Start</button>
-                <button onClick={() => this.stopTimer()}>Stop</button>
+                <div className="donut-chart">
+                    <svg width="100%" height="100%" viewBox="0 0 42 42" className="donut">
+                        <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="transparent"></circle>
+                        <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#FFFFFF22" stroke-width="5"></circle>
+
+                        <circle class="donut-segment" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#FFFFFFAA" stroke-width="5" stroke-dasharray={`${100 - total} ${total}`} stroke-dashoffset="25"></circle>
+                    </svg>
+                    <span className="count-down">{`${minutes}:${('0' + seconds).slice(-2)}`}</span>
+                </div>
+
+                { this.state.mode === 'stopped' 
+                ? <button onClick={() => this.startTimer()}>Start</button>
+                : <button onClick={() => this.stopTimer()}>Stop</button>
+                }
             </div>
         );
     }

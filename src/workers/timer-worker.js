@@ -27,6 +27,7 @@ export default () => {
     function stop() {
         clearInterval(self.countdown);
         self.mode = 'stopped';
+        self.remainingTicks = 20 * 60;
     }
 
     function setupBreakTimeCountdown() {
