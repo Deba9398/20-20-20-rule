@@ -1,26 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
+import Timer from './components/Timer';
 import './App.css';
+import NotificationsRequest from './components/NotificationsRequest';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+
+  state = {
+    notificationsEnabled: Notification.permission === 'granted'
+  }
+
+  enableNotifications() {
+    Notification.requestPermission().then((permission) => {
+      this.setState({
+        notificationsEnabled: permission === 'granted'
+      });
+    })
+  }
+
+  render() {
+    return (
+      <div className="App">
+        { this.state.notificationsEnabled 
+          ? <Timer /> 
+          : <NotificationsRequest enableNotifications={() => this.enableNotifications()}/> 
+        }
+      </div>
+    );
+  }
 }
 
 export default App;
