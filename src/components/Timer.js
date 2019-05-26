@@ -12,6 +12,7 @@ class Timer extends React.Component {
 
         newWorker.addEventListener('message', (e) => {
             this.setState(e.data);
+            document.title = e.data.mode === 'stopped' ? '20-20-20 Rule' : `${Math.ceil(this.state.remainingTicks / 60)} minutes`;
             console.log('Message from Worker: ' + e.data);
         });
 
