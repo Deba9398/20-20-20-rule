@@ -6,8 +6,8 @@ import Checkbox from './Checkbox.js';
 import SoundSelector, { SOUNDS } from './SoundSelector.js';
 
 const SECONDS_IN_MINUTE = 60;
-export const TIMER_SCREEN_TIME = 10;
-export const TIMER_BREAK_TIME = 5;
+export const TIMER_SCREEN_TIME = 20 * SECONDS_IN_MINUTE;
+export const TIMER_BREAK_TIME = 20;
 
 class Timer extends React.Component {
 
@@ -16,7 +16,9 @@ class Timer extends React.Component {
 
         const newWorker = new WebWorker(worker);
         const notificationsPermitted = Notification.permission === 'granted';
-        const soundFileName = SOUNDS[0].file;
+        const displayNotifications = localStorage.getItem('displayNotifications') === 'true' && notificationsPermitted;
+        const playSound = (localStorage.getItem('playSound') || 'true') === 'true';
+        const soundFileName = localStorage.getItem('soundFileName') || SOUNDS[0].file;
 
         newWorker.addEventListener('message', (e) => this.handleTimerEvent(e));
 
@@ -24,8 +26,8 @@ class Timer extends React.Component {
             worker: newWorker,
             mode: 'stopped',
             remainingTicks: TIMER_SCREEN_TIME,
-            displayNotifications: notificationsPermitted,
-            playSound: true,
+            displayNotifications,
+            playSound,
             soundFileName,
             audioObject: this.getAudioObject(soundFileName)
         }
@@ -65,28 +67,38 @@ class Timer extends React.Component {
         this.state.worker.postMessage('stop');
     }
 
+    setNotificationsEnabled(displayNotifications) {
+        localStorage.setItem('displayNotifications', displayNotifications);
+        this.setState({ displayNotifications });
+    }
+
     onDisplayNotificationsChange(event) {
         if (event.target.checked && Notification.permission !== 'granted') {
             Notification.requestPermission().then((permission) => {
                 if (permission === 'granted') {
-                    this.setState({ displayNotifications: event.target.checked });
+                    this.setNotificationsEnabled(event.target.checked);
                 }
                 else {
                     alert('You must allow notification to use this feature.')
-                    this.setState({ displayNotifications: false });
+                    this.setNotificationsEnabled(false);
                 }
             });
         }
 
-        this.setState({ displayNotifications: event.target.checked });
+        this.setNotificationsEnabled(event.target.checked);
     }
 
     onPlaySoundChange(event) {
-        this.setState({ playSound: event.target.checked });
+        const isEnabled = event.target.checked;
+
+        localStorage.setItem('playSound', isEnabled);
+        this.setState({ playSound: isEnabled });
     }
 
     onChangeSound(event) {
         const soundFileName = event.target.value;
+
+        localStorage.setItem('soundFileName', soundFileName);
 
         this.setState({ 
             soundFileName,
@@ -135,7 +147,7 @@ class Timer extends React.Component {
                     />
                     <div className="sound-selector">
                         <SoundSelector 
-                            value={this.state.soundFile} 
+                            value={this.state.soundFileName} 
                             isDisabled={!this.state.playSound}
                             audioObject={this.state.audioObject}
                             onChange={(e) => this.onChangeSound(e)}
