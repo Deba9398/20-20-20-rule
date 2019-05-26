@@ -1,7 +1,8 @@
 import React from 'react';
 import Timer from './components/Timer';
-import './App.css';
+import About from './components/About';
 import NotificationsRequest from './components/NotificationsRequest';
+import './App.scss';
 
 class App extends React.Component {
 
@@ -27,6 +28,8 @@ class App extends React.Component {
           ? <Timer /> 
           : <NotificationsRequest enableNotifications={() => this.enableNotifications()}/> 
         }
+
+        <About />
       </div>
     );
   }

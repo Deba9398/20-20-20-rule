@@ -1,5 +1,5 @@
 import React from 'react';
-import './Timer.css';
+import './Timer.scss';
 import worker from "../workers/timer-worker.js";
 import WebWorker from "../workers/worker-setup.js";
 
