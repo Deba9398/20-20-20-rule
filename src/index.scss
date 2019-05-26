@@ -30,11 +30,30 @@ button {
   font-weight: 700;
   cursor: pointer;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: rgba(255,255,255,0.1);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
   }
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.checkbox-wrapper {
+  height: 32px;
+  display: flex;
+  align-items: center;
+
+  label {
+    margin-left: 16px;
+  }
+
+  input:disabled + label {
+    color: rgba(255,255,255,0.5);
+  }
 }

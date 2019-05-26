@@ -1,25 +1,60 @@
-.timer {
-    margin-top: 32px;
-    padding: 32px 8px;
+.timer.row {
+    padding: 64px 8px;
 }
 
 .donut-chart {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 240px;
+    height: 280px;
     position: relative;
+
+    svg {
+        position: absolute;
+        z-index: -1;
+    }
 }
 
-.donut-chart svg {
-    position: absolute;
+.row {
+    display: flex;
+    margin-top: 32px;
+
+    .col {
+        flex: 1 1 0;
+        margin: 0 32px;
+        text-align: left;
+    }
 }
 
-.count-down {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
-    font-size: 24px;
+.notifications-not-permitted {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255,255,255,0.1);
+    margin: 8px 0 8px 32px;
+    padding: 16px 32px;
+    border-radius: 4px;
+
+    button {
+        margin-top: 8px;
+        align-self: flex-end;
+    }
 }
 
-button {
-    margin-top: 16px;
+.timer-status {
+
+    .count-down {
+        text-align: center;
+        font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+        font-size: 24px;
+    }
+
+    button {
+        margin-top: 8px;
+    }
+
+}
+
+.sound-selector {
+    margin-left: 34px;
+    margin-top: 8px;
 }
