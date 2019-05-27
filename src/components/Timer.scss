@@ -1,13 +1,26 @@
 .timer.row {
     padding: 64px 8px;
+    flex-wrap: wrap;
+}
+
+@media only screen and (max-width: 720px) {
+    .timer.row {
+        display: block;
+
+        .donut-chart {
+            border: none;
+        }
+    }
 }
 
 .donut-chart {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 280px;
+    min-height: 280px;
+    min-width: 280px;
     position: relative;
+    border-right: 1px solid rgba(255,255,255,0.15);
 
     svg {
         position: absolute;
@@ -15,16 +28,16 @@
     }
 }
 
-.row {
-    display: flex;
-    margin-top: 32px;
+// .row {
+//     display: flex;
+//     margin-top: 32px;
 
-    .col {
-        flex: 1 1 0;
-        margin: 0 32px;
-        text-align: left;
-    }
-}
+//     .col {
+//         flex: 1 1 0;
+//         margin: 0 32px;
+//         text-align: left;
+//     }
+// }
 
 .notifications-not-permitted {
     display: flex;

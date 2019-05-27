@@ -4,7 +4,7 @@ import './About.scss';
 class About extends React.Component {
     render() {
         return (
-            <div className="row">
+            <div className="about row">
                 <div className="col">
                     <h3>How to Use this Site</h3>
                     <p>Computer Vision Syndom (CVS) describes the symptoms associated with prolonged computer, phone, and other digital device use. Common symptoms are eyestrain, headaches, blurred vision, and dry eyes.</p>

@@ -16,8 +16,10 @@ class Timer extends React.Component {
 
         const newWorker = new WebWorker(worker);
         const notificationsPermitted = Notification.permission === 'granted';
+        const automaticallyStart = localStorage.getItem('automaticallyStart') === 'true';
         const displayNotifications = localStorage.getItem('displayNotifications') === 'true' && notificationsPermitted;
         const playSound = (localStorage.getItem('playSound') || 'true') === 'true';
+        const soundVolume = localStorage.getItem('soundVolume') || 100;
         const soundFileName = localStorage.getItem('soundFileName') || SOUNDS[0].file;
 
         newWorker.addEventListener('message', (e) => this.handleTimerEvent(e));
@@ -26,10 +28,16 @@ class Timer extends React.Component {
             worker: newWorker,
             mode: 'stopped',
             remainingTicks: TIMER_SCREEN_TIME,
+            automaticallyStart,
             displayNotifications,
             playSound,
             soundFileName,
+            soundVolume,
             audioObject: this.getAudioObject(soundFileName)
+        }
+
+        if (automaticallyStart) {
+            this.startTimer();
         }
     }
 
@@ -39,7 +47,7 @@ class Timer extends React.Component {
 
     handleTimerEvent(e) {
         this.setState(e.data);
-        document.title = e.data.mode === 'stopped' ? '20-20-20 Rule' : `${Math.ceil(this.state.remainingTicks / SECONDS_IN_MINUTE)} minutes`;
+        document.title = this.getWindowTitle();
 
         if (this.state.remainingTicks === 0) {
             if (this.state.displayNotifications) {
@@ -51,6 +59,21 @@ class Timer extends React.Component {
                 this.state.audioObject.play();
             }
         }
+    }
+
+    getWindowTitle() {
+        const mode = this.state.mode;
+
+        if (mode === 'stopped') {
+           return '20-20-20 Rule';
+        }
+
+        if (mode === 'break') {
+            return 'Break time';
+        }
+
+        const minutesRemaining = Math.floor(this.state.remainingTicks / SECONDS_IN_MINUTE);
+        return minutesRemaining > 0 ? `${minutesRemaining} ${minutesRemaining > 1 ? 'minutes' : 'minute'}` : 'Less than 1 minute';
     }
 
     startTimer() {
@@ -88,6 +111,13 @@ class Timer extends React.Component {
         this.setNotificationsEnabled(event.target.checked);
     }
 
+    onAutomaticallyStartChange(event) {
+        const isEnabled = event.target.checked;
+
+        localStorage.setItem('automaticallyStart', isEnabled);
+        this.setState({ automaticallyStart: isEnabled });
+    }
+
     onPlaySoundChange(event) {
         const isEnabled = event.target.checked;
 
@@ -95,7 +125,7 @@ class Timer extends React.Component {
         this.setState({ playSound: isEnabled });
     }
 
-    onChangeSound(event) {
+    onChangeSoundFile(event) {
         const soundFileName = event.target.value;
 
         localStorage.setItem('soundFileName', soundFileName);
@@ -104,6 +134,17 @@ class Timer extends React.Component {
             soundFileName,
             audioObject: this.getAudioObject(soundFileName)
         });
+    }
+
+    onChangeVolume(event) {
+        const soundVolume = event.target.value;
+
+        localStorage.setItem('soundVolume', soundVolume);
+
+        const audioObject = this.state.audioObject;
+        audioObject.volume = soundVolume / 100;
+
+        this.setState({ soundVolume });
     }
 
     render() {
@@ -132,9 +173,18 @@ class Timer extends React.Component {
                 <div className="col">
                     <h3>Options</h3>
                     <Checkbox 
+                        labelText="Automatically Start on Page Load" 
+                        inputName="automaticallyStart" 
+                        id="automaticallyStart"
+                        title="Automatically start the timer when this page is opened."
+                        isChecked={this.state.automaticallyStart}
+                        onChange={(e) => this.onAutomaticallyStartChange(e)}
+                    />
+                    <Checkbox 
                         labelText="Display Notifications" 
                         inputName="displayNotifications" 
                         id="displayNotifications"
+                        title="Display a browser notification when it's time for a break and when the break is over."
                         isChecked={this.state.displayNotifications}
                         onChange={(e) => this.onDisplayNotificationsChange(e)}
                     />
@@ -142,15 +192,18 @@ class Timer extends React.Component {
                         labelText="Play Sound" 
                         inputName="playSound" 
                         id="playSound"
+                        title="Play a sound when it's time for a break and when the break is over."
                         isChecked={this.state.playSound}
                         onChange={(e) => this.onPlaySoundChange(e)}
                     />
                     <div className="sound-selector">
                         <SoundSelector 
-                            value={this.state.soundFileName} 
+                            soundFileName={this.state.soundFileName} 
+                            soundVolume={this.state.soundVolume}
                             isDisabled={!this.state.playSound}
                             audioObject={this.state.audioObject}
-                            onChange={(e) => this.onChangeSound(e)}
+                            onSoundFileChange={(e) => this.onChangeSoundFile(e)}
+                            onVolumeChange={(e) => this.onChangeVolume(e)}
                         />
                     </div>
                 </div>
